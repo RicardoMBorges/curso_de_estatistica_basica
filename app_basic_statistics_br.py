@@ -34,17 +34,15 @@ for logo_name in ["LAABio.png", "Basic_Statistics_Course.png"]:
 
 st.sidebar.divider()
 
-st.sidebar.markdown("### 🌐 Language / Idioma")
+st.markdown("### 🌐 Language / Idioma")
 
-st.sidebar.link_button(
-    "Português 🇧🇷",
-    "https://curso-de-estatistica-basica.streamlit.app/"
-)
+c1, c2 = st.columns(2)
 
-st.sidebar.link_button(
-    "English",
-    "https://basic-statistics-course.streamlit.app/"
-)
+with c1:
+    st.link_button("🇧🇷 Português", "https://curso-de-estatistica-basica.streamlit.app/")
+
+with c2:
+    st.link_button("🇺🇸 English", "https://basic-statistics-course.streamlit.app/")
 
 # =========================================================
 # Helpers
