@@ -1,7 +1,7 @@
 """
-Basic Statistics for Analytical Chemistry
-Interactive course for teaching statistics concepts
-Author: Ricardo M. Borges
+Estatística Básica para Química Analítica
+Curso interativo para ensino de conceitos estatísticos
+Autor: Ricardo M. Borges
 """
 import io
 from pathlib import Path
@@ -15,7 +15,7 @@ import streamlit as st
 from scipy import stats
 
 st.set_page_config(
-    page_title="Basic Statistics for Analytical Chemistry",
+    page_title="Estatística Básica para Química Analítica",
     layout="wide",
 )
 
@@ -48,8 +48,7 @@ def add_help_text_sidebar(title: str, text: str):
 
 def generate_example_dataset(seed: int = 42) -> pd.DataFrame:
     """
-    Generate a larger example dataset with three groups (A, B, C),
-    including 2 outliers per group for boxplot and distribution demonstrations.
+    Gera um conjunto de dados de exemplo maior com três grupos (A, B, C), incluindo 2 outliers por grupo para demonstrações de boxplot e distribuições.
     """
     rng = np.random.default_rng(seed)
 
@@ -86,16 +85,16 @@ def generate_example_dataset(seed: int = 42) -> pd.DataFrame:
             ["B"] * len(group_b) +
             ["C"] * len(group_c)
         ),
-        "Response": response,
-        "Response2": response2,
+        "Resposta 1": response,
+        "Resposta 2": response2,
     })
 
     return df
 
 def generate_ANOVA_example_dataset(seed: int = 123, group_specs=None) -> pd.DataFrame:
     """
-    Generate an ANOVA – Análise de Variância example dataset with any number of groups.
-    group_specs should be a list of tuples: (group_name, mean, sd, n)
+    Gerar um conjunto de dados de exemplo para ANOVA – Análise de Variância com qualquer número de grupos.
+    group_specs deve ser uma lista de tuplas no formato: (nome_do_grupo, média, desvio_padrão, n)
     """
     rng = np.random.default_rng(seed)
 
@@ -117,9 +116,9 @@ def generate_ANOVA_example_dataset(seed: int = 123, group_specs=None) -> pd.Data
         samples.extend([f"{group_name}_{i+1}" for i in range(n)])
 
     return pd.DataFrame({
-        "Sample": samples,
-        "Group": groups,
-        "Response": response,
+        "Amostra": samples,
+        "Grupo": groups,
+        "Resposta": response,
     })
 
 def numeric_columns(df: pd.DataFrame):
@@ -475,7 +474,7 @@ tabs = st.tabs([
 st.sidebar.header("Importar Dados")
 
 add_help_text_sidebar(
-    "Import Data",
+    "Importar arquivos",
     """
 Nesta seção você pode:
 
@@ -493,7 +492,7 @@ with c1:
         st.success("Example dataset loaded.")
 
 with c2:
-    uploaded = st.sidebar.file_uploader("Carregar arquivo CSV", type=["csv"],help="Upload a CSV table containing your analytical data. Ideally include numeric columns for measurements and categorical columns for groups.")
+    uploaded = st.sidebar.file_uploader("Carregar arquivo CSV", type=["csv"],help="Carregue uma tabela CSV contendo seus dados analíticos. Idealmente, ela deve incluir colunas numéricas para as medições e colunas categóricas para os grupos.")
 
     if uploaded is not None:
         df_up = pd.read_csv(uploaded)
@@ -583,18 +582,18 @@ Alguns dos parâmetros mais importantes são:
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            response_col = st.selectbox("Select numeric variable", num_cols,
-		help="Choose the numeric variable that will be analyzed statistically.")
+            response_col = st.selectbox("Selecionar variável numérica", num_cols,
+		help="Escolha a variável numérica que será analisada estatisticamente.")
 
         with col2:
             group_col = st.selectbox(
-                "Select group column (optional)",
+                "Selecionar coluna de grupos (opcional)",
                 options=["<None>"] + cat_cols,
                 index=1 if "Group" in cat_cols else 0,
-                help = "Choose the column that identifies the experimental groups, such as control vs treated, or group A vs group B.")
+                help = "Escolha a coluna que identifica os grupos experimentais, como controle vs tratado ou grupo A vs grupo B.")
 
         with col3:
-            show_by_group = st.checkbox("Show statistics by group", value=(group_col != "<None>"),help="If selected, the descriptive statistics will be calculated separately for each group.")
+            show_by_group = st.checkbox("Mostrar estatísticas por grupo", value=(group_col != "<None>"),help="Se selecionado, as estatísticas descritivas serão calculadas separadamente para cada grupo.")
 
         if group_col == "<None>":
             stats_all = descriptive_stats(df[response_col])
@@ -609,7 +608,7 @@ Alguns dos parâmetros mais importantes são:
                     rows.append(ds)
                 out = pd.DataFrame(rows)
                 cols = [group_col] + [c for c in out.columns if c != group_col]
-                st.subheader("Descriptive statistics by group")
+                st.subheader("Estatísticas descritivas por grupo")
                 st.dataframe(out[cols], use_container_width=True)
             else:
                 stats_all = descriptive_stats(df[response_col])
@@ -644,7 +643,7 @@ Gráficos de distribuição ajudam a entender:
         c1, c2, c3, c4 = st.columns(4)
 
         with c1:
-            response_col = st.selectbox("Numeric variable", num_cols, key="dist_response")
+            response_col = st.selectbox("Valores Numéricos", num_cols, key="dist_response")
         with c2:
             group_col = st.selectbox(
                 "Group column",
@@ -653,24 +652,24 @@ Gráficos de distribuição ajudam a entender:
                 key="dist_group"
             )
         with c3:
-            bins = st.slider("Histogram bins", 5, 40, 12,help="Controls how many bars are used in the histogram. More bins show more detail, fewer bins give a smoother overview.")
+            bins = st.slider("Classes do histograma", 5, 40, 12,help="Controla quantas barras serão usadas no histograma. Mais classes mostram mais detalhes; menos classes fornecem uma visão mais suave da distribuição.")
         with c4:
             plot_mode = st.selectbox(
-                "Plot mode",
+                "Modo de visualização",
                 [
-                    "Both groups together (overlay)",
-                    "Facet by group",
-                    "Overall only",
-                ],help="Choose how the Distribuição dos Dados will be displayed: overlaid groups, separate panels by group, or all observations together."
+            "Todos os grupos juntos (sobreposição)",
+            "Separar por grupo",
+            "Apenas distribuição geral",
+                ],help="Escolha como a distribuição dos dados será exibida: grupos sobrepostos, painéis separados por grupo ou todas as observações juntas."
             )
 
-        show_normal = st.checkbox("Show theoretical normal curve", value=True,help="Displays a normal curve estimated from the data mean and standard deviation.")
-        show_lines = st.checkbox("Show mean / median / CI95 lines", value=True,help="Adds vertical reference lines for mean, median, and 95% confidence interval when available.")
-        show_rug = st.checkbox("Show rug / points", value=False,help="Shows individual observations along the axis to help visualize data density and spread.")
+        show_normal = st.checkbox("Mostrar curva normal teórica", value=True,help="Exibe uma curva normal estimada a partir da média e do desvio padrão dos dados.")
+        show_lines = st.checkbox("Mostrar linhas de média / mediana / IC95", value=True,help="AdAdiciona linhas verticais de referência para a média, a mediana e o intervalo de confiança de 95%, quando disponível.")
+        show_rug = st.checkbox("Mostrar pontos individuais (rug)", value=False,help="Mostra as observações individuais ao longo do eixo para ajudar a visualizar a densidade e a dispersão dos dados.")
 
         data = df[[response_col, group_col]].dropna().copy()
 
-        if plot_mode == "Overall only":
+        if plot_mode == "Apenas distribuição geral":
             x = data[response_col].to_numpy()
 
             fig = px.histogram(
@@ -687,14 +686,14 @@ Gráficos de distribuição ajudam a entender:
             if show_normal:
                 x_line, y_line = normal_curve_for_hist(x, bins=bins)
                 if x_line is not None:
-                    fig.add_trace(go.Scatter(x=x_line, y=y_line, mode="lines", name="Normal curve"))
+                    fig.add_trace(go.Scatter(x=x_line, y=y_line, mode="lines", name="Curva Normal"))
 
             if show_lines:
                 fig = add_descriptive_lines(fig, ds)
 
             st.plotly_chart(fig, use_container_width=True)
 
-            st.subheader("Descriptive parameters shown on the distribution")
+            st.subheader("Parâmetros descritivos mostrados na distribuição")
             st.dataframe(pd.DataFrame([ds]).T.rename(columns={0: "Value"}), use_container_width=True)
 
         elif plot_mode == "Both groups together (overlay)":
@@ -787,16 +786,16 @@ Eles são uma das formas mais rápidas de comparar grupos experimentalmente."""
 
         c1, c2, c3 = st.columns(3)
         with c1:
-            response_col = st.selectbox("Numeric variable", num_cols, key="box_response",help="Choose the numeric variable to compare across groups using a boxplot.")
+            response_col = st.selectbox("Variável numérica", num_cols, key="box_response",help="Escolha a variável numérica que será comparada entre os grupos usando um boxplot.")
         with c2:
             group_col = st.selectbox(
-                "Group column",
+                "Coluna de grupos",
                 cat_cols,
                 index=cat_cols.index("Group") if "Group" in cat_cols else 0,
                 key="box_group"
             )
         with c3:
-            points_mode = st.selectbox("Show points", ["all", "outliers", False], index=0,help="Choose whether to display all observations, only suspected outliers, or no points on the boxplot.")
+            points_mode = st.selectbox("Mostrar pontos", ["all", "outliers", False], index=0,help="Escolha se deseja mostrar todas as observações, apenas possíveis valores extremos (outliers) ou nenhum ponto no boxplot.")
 
         fig_box = px.box(
             df,
@@ -804,12 +803,12 @@ Eles são uma das formas mais rápidas de comparar grupos experimentalmente."""
             y=response_col,
             points=points_mode,
             color=group_col,
-            title=f"Boxplot of {response_col} by {group_col}"
+            title=f"Boxplot de {response_col} por {group_col}"
         )
 
         st.plotly_chart(fig_box, use_container_width=True)
 
-        show_violin = st.checkbox("Also show violin plot", value=True)
+        show_violin = st.checkbox("Mostrar também gráfico de violino", value=True)
         if show_violin:
             fig_violin = px.violin(
                 df,
@@ -818,7 +817,7 @@ Eles são uma das formas mais rápidas de comparar grupos experimentalmente."""
                 box=True,
                 points="all",
                 color=group_col,
-                title=f"Violin plot of {response_col} by {group_col}"
+                title=f"Gráfico de violino de {response_col} por {group_col}"
             )
             st.plotly_chart(fig_violin, use_container_width=True)
 
@@ -879,7 +878,7 @@ São apresentados vários testes estatísticos importantes:
             if len(x1) < 2 or len(x2) < 2:
                 st.error("Each selected group must contain at least two numeric observations.")
             else:
-                st.subheader("Selected data summary")
+                st.subheader("Resumo dos dados selecionados")
 
                 ds1 = descriptive_stats(pd.Series(x1))
                 ds2 = descriptive_stats(pd.Series(x2))
@@ -889,7 +888,7 @@ São apresentados vários testes estatísticos importantes:
                 ])
                 st.dataframe(sum_df, use_container_width=True)
 
-                st.subheader("Test results")
+                st.subheader("Resultados dos Testes")
                 test_df = run_two_group_tests(x1, x2, alpha=alpha)
                 st.dataframe(test_df, use_container_width=True)
 
@@ -898,28 +897,28 @@ São apresentados vários testes estatísticos importantes:
 
                 c1, c2, c3 = st.columns(3)
                 with c1:
-                    st.metric("Difference in means", f"{diff:.4f}")
+                    st.metric("Diferença entre as médias", f"{diff:.4f}")
                 with c2:
-                    st.metric("CI difference (lower)", f"{ci_low:.4f}")
+                    st.metric("IC da diferença (limite inferior)", f"{ci_low:.4f}")
                 with c3:
-                    st.metric("CI difference (upper)", f"{ci_high:.4f}")
+                    st.metric("IC da diferença (limite superior)", f"{ci_high:.4f}")
 
                 st.metric("Cohen's d", f"{d:.4f}")
 
-                st.subheader("Interpretation guide")
+                st.subheader("Guia de interpretação")
                 st.markdown(
                     f"""
-- **Shapiro-Wilk p > {alpha}**: data are compatible with normality.
-- **Levene p > {alpha}**: equal variances are plausible.
-- **Student t-test**: use when normality is acceptable and variances are similar.
-- **Welch t-test**: safer when variances differ.
-- **Mann-Whitney**: useful as a nonparametric alternative.
-- **If p ≤ {alpha}**: reject H₀ at the selected significance level.
-- **Cohen's d** helps quantify effect size, not just significance.
+- **Shapiro-Wilk p > {alpha}**: os dados são compatíveis com uma distribuição normal.
+- **Levene p > {alpha}**: a hipótese de variâncias iguais é plausível.
+- **Teste t de Student**: usar quando a normalidade é aceitável e as variâncias são semelhantes.
+- **Teste t de Welch**: mais adequado quando as variâncias são diferentes.
+- **Mann-Whitney**: útil como alternativa não paramétrica.
+- **Se p ≤ {alpha}**: rejeita-se H₀ no nível de significância selecionado.
+- **d de Cohen** ajuda a quantificar o tamanho do efeito, não apenas a significância estatística.
 """
                 )
 
-                st.subheader("Visual comparison of the two groups")
+                st.subheader("Comparação visual dos dois grupos")
                 plot_df = df.loc[df[group_col].isin([g1, g2]), [group_col, response_col]].copy()
 
                 fig_compare = px.box(
@@ -1101,12 +1100,12 @@ Essa ideia é uma das mais importantes de toda a estatística, pois explica por 
     sample_means = [rng.choice(population, size=sample_size, replace=True).mean() for _ in range(n_samples)]
     sample_means = np.array(sample_means)
 
-    st.subheader("Population distribution")
-    fig_pop = px.histogram(population[:3000], nbins=40, title="Population (subset shown)")
+    st.subheader("Distribuição da População")
+    fig_pop = px.histogram(population[:3000], nbins=40, title="População (subconjunto mostrado)")
     st.plotly_chart(fig_pop, use_container_width=True)
 
-    st.subheader("Distribution of sample means")
-    fig_means = px.histogram(sample_means, nbins=40, title="Sampling distribution of the mean")
+    st.subheader("Distribuição das médias amostrais")
+    fig_means = px.histogram(sample_means, nbins=40, title="Distribuição amostral da média")
     x_line, y_line = normal_curve_for_hist(sample_means, bins=40)
     if x_line is not None:
         fig_means.add_trace(go.Scatter(x=x_line, y=y_line, mode="lines", name="Normal curve"))
@@ -1143,26 +1142,26 @@ Esses efeitos ajudam a entender como a precisão das estimativas depende da qual
 
     df = st.session_state["df"]
 
-    source = st.radio("Data source", ["Usar conjunto de dados atual", "Simular novos dados"], horizontal=True,help="Escolha se o intervalo de confiança será calculado a partir do conjunto de dados atual ou de valores recém-simulados."
+    source = st.radio("Fonte de dados", ["Usar conjunto de dados atual", "Simular novos dados"], horizontal=True,help="Escolha se o intervalo de confiança será calculado a partir do conjunto de dados atual ou de valores recém-simulados."
 )
 
-    if source == "Use current dataset" and df is not None:
+    if source == "Usar conjunto de dados atual" and df is not None:
         num_cols = numeric_columns(df)
-        response_col = st.selectbox("Numeric variable", num_cols, key="ci_response",help="Choose the numeric variable used to calculate the confidence interval.")
+        response_col = st.selectbox("Variável numérica", num_cols, key="ci_response",help="Escolha a variável numérica utilizada para calcular o intervalo de confiança.")
         x = pd.to_numeric(df[response_col], errors="coerce").dropna().to_numpy()
     else:
         c1, c2, c3 = st.columns(3)
         with c1:
-            sim_mean = st.slider("Simulated mean", 0.0, 200.0, 100.0, 1.0,help="Sets the mean of the simulated dataset.")
+            sim_mean = st.slider("Média simulada", 0.0, 200.0, 100.0, 1.0,help="Define o desvio padrão do conjunto de dados simulado.")
         with c2:
-            sim_sd = st.slider("Simulated SD", 1.0, 30.0, 8.0, 1.0,help="Sets the standard deviation of the simulated dataset."
+            sim_sd = st.slider("Desvio padrão simulado", 1.0, 30.0, 8.0, 1.0,help="Sets the standard deviation of the simulated dataset."
 )
         with c3:
-            sim_n = st.slider("Simulated n", 3, 200, 20, 1,help="Defines how many observations will be simulated.")
+            sim_n = st.slider("n simulado", 3, 200, 20, 1,help="Define quantas observações serão simuladas.")
         rng = np.random.default_rng(321)
         x = rng.normal(sim_mean, sim_sd, sim_n)
 
-    conf = st.selectbox("Confidence level", [0.90, 0.95, 0.99], index=1,help="Defines how wide the confidence interval will be. Higher confidence gives a wider interval.")
+    conf = st.selectbox("Nível de confiança", [0.90, 0.95, 0.99], index=1,help="Define a largura do intervalo de confiança. Níveis de confiança maiores produzem intervalos mais largos.")
 
     if len(x) >= 2:
         mean, low, high, sd, sem = confidence_interval_mean(x, confidence=conf)
@@ -1184,7 +1183,7 @@ Esses efeitos ajudam a entender como a precisão das estimativas depende da qual
             mode="lines+markers+text",
             text=[f"{low:.3f}", f"mean={mean:.3f}", f"{high:.3f}"],
             textposition="top center",
-            name="Confidence Interval"
+            name="Intervalo de Confiança"
         ))
         fig_ci.update_yaxes(visible=False)
         fig_ci.update_layout(title=f"{int(conf*100)}% Intervalo de Confiança para a Média")
@@ -1244,14 +1243,14 @@ Nesta seção, o aplicativo detecta automaticamente quantos grupos existem na co
             response_col = st.selectbox(
                 "Variável numérica",
                 num_cols,
-                key="ANOVA – Análise de Variância_resp",
+                key="ANOVA_resp",
                 help="Escolha a variável numérica cujas médias serão comparadas entre todos os grupos detectados."
             )
         with c2:
             group_col = st.selectbox(
-                "Group column",
+                "Coluna de grupos",
                 cat_cols,
-                key="ANOVA – Análise de Variância_group",
+                key="ANOVA_group",
                 help="Escolha a variável categórica que define os grupos utilizados na ANOVA – Análise de Variância."
             )
 
@@ -1259,7 +1258,7 @@ Nesta seção, o aplicativo detecta automaticamente quantos grupos existem na co
             "Alpha",
             [0.10, 0.05, 0.01],
             index=1,
-            key="ANOVA – Análise de Variância_alpha",
+            key="ANOVA_alpha",
             help="Limiar de significância usado para decidir se o resultado da ANOVA – Análise de Variância é estatisticamente significativo."
         )
 
@@ -1427,7 +1426,7 @@ Essas ferramentas ajudam a entender a relação entre duas variáveis e a avalia
 
         reg_df = pd.DataFrame([reg]).T.rename(columns={0: "Value"})
         reg_df.loc["p_value", "Value"] = f"{reg_df.loc['p_value', 'Value']:.3e}"
-        st.subheader("Regression summary")
+        st.subheader("Resumo da regressão")
         st.dataframe(reg_df, use_container_width=True)
 
 # =========================================================
